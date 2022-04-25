@@ -1,0 +1,1240 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/uofcengo/BikeAssistance/1.0.0
+  - description: Bike Assistant
+    url: https://engo651-arash-mozhdehi.herokuapp.com/
+
+info:
+  description: API Documentation
+  version: "1.0.0"
+  title: Bike Assistant
+
+tags:
+  - name: user
+    description: Operations about user
+  - name: destination
+    description: Everything about destination
+paths:
+  /api/signin:
+    get:
+      tags:
+        - user
+      summary: Signing in to the account.
+      operationId: signin
+      description: 
+        Allows the user to login into his/her account and provide the frontend with token for authorized API access in the future.
+      parameters:
+        - in: query
+          name: username
+          description: The account username.
+          required: true
+          schema:
+            type: string
+            example: amozhdehi
+        - in: query
+          name: password
+          description: The password for the account.
+          required: true
+          schema:
+            type: string
+            format: password
+            example: d033e22ae348aeb5660fc2140aec35850c4da997
+      responses:
+        '200':
+          description: User signed in successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignIn'
+        '401':
+          description: Incorrect login
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'   
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'          
+
+  /api/signout:
+    get:
+      tags:
+        - user
+      summary: Sign the user out of the system.
+      operationId: signout
+      description: 
+        Allows the user logout of his or her account and delete the corresponding from the DB.
+      parameters:
+        - in: query
+          name: token
+          description: The corresponding token.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+      responses:
+        '200':
+          description: Signed out successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: Incorrect login
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken' 
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'  
+
+  /api/signup:
+    get:
+      tags:
+        - user
+      summary: Creates an account in the system.
+      operationId: signup
+      description: 
+        Allow user to register an account with Firstname, Lastname and weight, as well as a combination of username and password for authenticating the user in the future upon logging in to user account
+      parameters:
+        - in: query
+          name: fname
+          description: The user's first name.
+          required: true
+          schema:
+            type: string
+            example: Arash
+        - in: query
+          name: lname
+          description: The user's last name.
+          required: true
+          schema:
+            type: string
+            example: Mozhdehi
+        - in: query
+          name: password
+          description: The password chosen by the user for the account.
+          required: true
+          schema:
+            type: string
+            format: password
+            example: d033e22ae348aeb5660fc2140aec35850c4da997
+        - in: query
+          name: weight
+          description: The weight of user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.5
+        - in: query
+          name: username
+          description: The username chosen by the user for the account.
+          required: true
+          schema:
+            type: string
+            example: amozhdehi
+      responses:
+        '200':
+          description: Signup successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: User already existed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserAlreadyExist' 
+        '500':
+          description: Error encounter while processing the request 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError' 
+
+  /api/destinations_feedbacks:
+    get:
+      tags:
+        - destination
+      summary: Returns a list of feedbacks.
+      operationId: destinations_feedbacks
+      description: 
+        Destination's feedbacks as well as the average rating of the place and the number of the users voted for this place.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the destination.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.08140
+        - in: query
+          name: lng
+          description: The longitude of the destination.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.14302
+        - in: query
+          name: type
+          description: The type of the destination. (eg. historical, event, bike park, or parking lot for bikes)
+          required: true
+          schema:
+            type: string
+            example: historical
+        - in: query
+          name: username
+          description: The username chosen by the user for the account.
+          required: true
+          schema:
+            type: string
+            example: ArashMozhedehi
+        - in: query
+          name: name
+          description: The name of the destination.
+          required: true
+          schema:
+            type: string
+            example: Nose Hill Park
+      responses:
+        '200':
+          description: Successfully returning of the list of feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessFeedback'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken' 
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError' 
+
+  /api/gototoilet:
+    get:
+      tags:
+        - destination
+      summary: Returns the best toilet's location
+      operationId: gototoilet
+      description: 
+        With the explanation and exploitation of 0.5 it finds highest rated toilet with a radius chosen by the user.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: radius
+          description: The radius that the application should consider for finding a toilet.
+          required: true
+          schema:
+            type: integer
+            format: int32 
+            example: 50
+      responses:
+        '200':
+          description: Returning of the location of the toilet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessLocation'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken' 
+        '404':
+          description: There is no place within the radius
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotFound' 
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'          
+
+  /api/gotowater:
+    get:
+      tags:
+        - destination
+      summary: Returns the best water fountain's location.
+      operationId: gotowater
+      description: 
+        With the explanation and exploitation of 0.5 it finds highest rated water fountain with a radius chosen by the user.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0     
+        - in: query
+          name: lat
+          description: The latitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: radius
+          description: The radius that the application should consider for finding a water fountain.
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 50
+      responses:
+        '200':
+          description: Returning of the location of the water fountain
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessLocation'          
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken' 
+        '404':
+          description: There is no place within the radius
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotFound'  
+        '500':
+          description: Error encounter while processing the request  
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError' 
+
+  /api/gotobench:
+    get:
+      tags:
+        - destination
+      summary: Returns the best bench's location.
+      operationId: gotobench
+      description: 
+        With the explanation and exploitation of 0.5 it finds highest rated bench with a radius chosen by the user.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: radius
+          description: The radius that the application should consider for finding a bench.
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 50
+      responses:
+        '200':
+          description: Returning of the location of the bench
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessLocation' 
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'
+        '404':
+          description: There is no place within the radius
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError' 
+
+  /api/benchfeedback:
+    get:
+      tags:
+        - destination
+      summary: Receives the user's feedback for the corresponding bench.
+      operationId: benchfeedback
+      description: 
+        Receives the user's feedback for the corresponding bench and insert it in the database to be used by the application for the suggesting to users in future.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the bench.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the bench.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: rate
+          description: The user's rating for the bench.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 2.5
+      responses:
+        '200':
+          description: Successfully added the feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'    
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'
+        '403':
+          description: Already submitted feedback on the bench
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submitted'      
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError' 
+
+  /api/toiletfeedback:
+    get:
+      tags:
+        - destination
+      summary: Receives the user's feedback for the corresponding toilet
+      operationId: toiletfeedback
+      description: 
+        Receives user's feedback for the corresponding toilet and insert it in the database to be used by the application for the suggesting to users in the future.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the toilet.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the toilet.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: rate
+          description: The user's rating for the toilet.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 2.5          
+      responses:
+        '200':
+          description: Successfully added the feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'     
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'  
+        '403':
+          description: Already submitted feedback on the toilet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submitted'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'          
+
+  /api/waterfeedback:
+    get:
+      tags:
+        - destination
+      summary: Receives the user's feedback for the corresponding water fountain.
+      operationId: waterfeedback
+      description: 
+        Receives user's feedback for the corresponding water fountain and insert it in the database to be used by the application for the suggesting to users in future.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the water fountain.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the water fountain.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: rate
+          description: The user's rating for the water fountain.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 2.5           
+      responses:
+        '200':
+          description: Successfully added the feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'           
+        '403':
+          description: Already submitted feedback on the water fountain
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submitted'
+        '500':
+          description: Error encounter while processing the request 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'           
+
+  /api/changepassword:
+    get:
+      tags:
+        - user
+      summary: Changing the password for the corresponding account.
+      operationId: changepassword
+      description: 
+        Receives the new password from the user and updates the password for the corresponding account.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: password
+          description: The password chosen by the user
+          required: true
+          schema:
+            type: string
+            format: password
+            example: Password123
+      responses:
+        '200':
+          description: Successfully changed the password
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'   
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+  /api/changeweight:
+    get:
+      tags:
+        - user
+      summary: Updating the weight of the user.
+      operationId: changeweight
+      description: 
+        Receives the new weight of the user from the user and updates it in the Database.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: weight
+          description: The new weight entered by the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 50.5
+      responses:
+        '200':
+          description: Successfully updating the weight of the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+  /api/feedback:
+    post:
+      tags:
+        - destination
+      summary: Gives feedback to the place
+      operationId: feedback
+      description: Receives feedback from the user and insert it in the Database's "dst_feedbacks" table.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the place. (e.g. historical, event, bike park, or parking lot for bikes)
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the place. (e.g. historical, event, bike park, or parking lot for bikes)
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+        - in: query
+          name: name
+          description: The name of the corresponding place of event.
+          required: true
+          schema:
+            type: string
+            example: St. Andrew's United Church
+        - in: query
+          name: type
+          description: The type of the place. (e.g. historical, event, bike park, or parking lot for bikes)
+          required: true
+          schema:
+            type: string
+            example: historical
+        - in: query
+          name: rate
+          description: The rating that user gave to this place.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 2.5
+        - in: query
+          name: comment
+          description: The user comment on the corresponding place.
+          required: true
+          schema:
+            type: string
+            example: Nice place
+      responses:
+        '200':
+          description: Successfully adding the feedback and comment
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'
+        '403':
+          description: Already submitted feedback on the place
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submitted'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+  /api/location_update:
+    get:
+      tags:
+        - user
+      summary: Receives user's new location
+      operationId: location_update
+      description: 
+        Receives the user's new location and insert it in the Database to be used by the application for statistical analysis on the user's activity and representing it to the user in the future.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: lat
+          description: The latitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 51.4430355
+        - in: query
+          name: lng
+          description: The longitude of the current location of the user.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -114.8121883
+      responses:
+        '200':
+          description: Successfully insert the current location of the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Success'
+        '401':
+          description: Incorrect token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectToken'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+  /api/get_stats:
+    get:
+      tags:
+        - user
+      summary: Get user statistics
+      operationId: get_stats
+      description: 
+        Returns the values for the amount of kilo calories burned by the user during the last 7 days and the average kilo calories burned during the last 30 days.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+      responses:
+        '200':
+          description: Successfully return the requested statistical analysis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessStats'
+        '401':
+          description: Incorrect login
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectLogin'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+
+  /api/get_range_stats:
+    get:
+      tags:
+        - user
+      summary: Get user range statistics
+      operationId: get_range_stats
+      description: 
+        Returns the values for the average and aggregated as well as the individual amount of Calories that user burn during the period given.
+      parameters:
+        - in: query
+          name: token
+          description: The token allocated to the signed in user upon logging in.
+          required: true
+          schema:
+            type: string
+            example: e94c3f3ade2a92b39dddebb1f142fae0
+        - in: query
+          name: start
+          description: The starting date for the query.
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2022-04-01"
+        - in: query
+          name: end
+          description: The finishing date for the query.
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2022-04-06"
+            
+      responses:
+        '200':
+          description: Successfully returned the requested statistical analysis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SuccessStatsRange'
+        '401':
+          description: Incorrect login
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncorrectLogin'
+        '500':
+          description: Error encounter while processing the request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+
+components:
+  schemas:
+    SignIn:
+      type: object
+      required:
+        - message
+        - f_name
+        - l_name
+        - token
+      properties:
+        message:
+          type: string
+          example: success
+        f_name:
+          type: string
+          example: Arash
+        l_name:
+          type: string
+          example: Mozhdehi
+        token:
+          type: string
+          example: e94c3f3ade2a92b39dddebb1f142fae0
+        # manufacturer:
+        #   $ref: '#/components/schemas/Manufacturer'
+    IncorrectToken:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Incorrect token
+    InternalServerError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Error encountered unable to connect to the database.
+    Success:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: success 
+    UserAlreadyExist:      
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: User already exist           
+    SuccessFeedback:
+      type: object
+      required:
+        - message
+        - rate
+        - votes
+        - feedbacks
+      properties:
+        message:
+          type: string
+          example: success
+        rate:
+          type: number
+          format: double
+          example: 2.5
+        votes:
+          type: integer
+          format: int32
+          example: 120
+        feedbacks:
+          $ref: '#/components/schemas/feedbacks'
+    feedbacks:
+        type: object
+        required:
+          - rate
+          - feedback
+        properties:
+          rate:
+            type: number
+            format: double
+            example: 3
+          feedback:
+            type: string
+            example: Average Place.
+    SuccessLocation:
+      type: object
+      required:
+        - message
+        - lat
+        - lng
+      properties:
+        message:
+          type: string
+          example: success
+        lat:
+          type: number
+          format: double
+          example: 51.4430356
+        lng:
+          type: number
+          format: double
+          example: -114.8121884         
+    NotFound:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: there is no place
+    SuccessStats:
+      type: object
+      required:
+        - message
+        - weekly
+        - monthly
+      properties:
+        message:
+          type: string
+          example: success
+        weekly:
+          type: number
+          format: double
+          example: 1290, 1230, 3500, 0, 0, 0, 5000
+        monthly:
+          type: number
+          format: double
+          example: 15000
+    IncorrectLogin:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Incorrect login
+    Submitted:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Error
+    SuccessStatsRange:
+      type: object
+      required:
+        - message
+        - days
+        - data
+        - average
+        - total
+      properties:
+        message:
+          type: string
+          example: success
+        days:
+          type: integer
+          format: int32
+          example: 6
+        data:
+          type: array
+          items: 
+            type: integer
+            example: 120, 123, 3500, 0, 0, 5000
+        average:
+          type: number
+          format: double
+          example: 1457.16
+        total:
+          type: number
+          format: double
+          example: 8743
